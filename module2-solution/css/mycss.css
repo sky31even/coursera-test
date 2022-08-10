@@ -14,28 +14,34 @@
 
 h1 {
     font-size: 1.75em;
+    text-align: center;
 }
 
 h2 {
     position: relative;
     float: right;
-    margin: 3px 3px 10px 15px;
+    margin: 0 0 10px 15px;
     color: white;
     border: 1px solid black;
     padding: 8px;
     font-size: 1.25em;
+    width: 150px;
+    text-align: center;
 }
 
 .contentbox:nth-of-type(1) h2 {
-    background-color: blue;
+    color: black;
+    background-color: #d59898;
 }
 
 .contentbox:nth-of-type(2) h2 {
-    background-color: blueviolet;
+    color: white;
+    background-color: #c14543;
 }
 
 .contentbox:nth-of-type(3) h2 {
-    background-color: tomato;
+    color: black;
+    background-color: #e5d198;
 }
 
 .contentbox {
@@ -45,12 +51,15 @@ h2 {
 }
 
 section {
+    float: left;
     border: 1px black solid;
-    padding: 5px;
+    background-color: #999999;
 }
 
 p {
-    padding: 1em;
+    float: left;
+    clear: left;
+    margin: 0 1em 1em 1em;
     text-align: justify;
 }
 
@@ -58,9 +67,6 @@ p {
 /********** mobile view **********/
 
 @media (max-width: 767px) {
-    section {
-        background-color: yellowgreen;
-    }
     .contentbox {
         width: 100%;
     }
@@ -70,9 +76,6 @@ p {
 /********** tablet view **********/
 
 @media (min-width: 768px) and (max-width: 991px) {
-    section {
-        background-color: bisque;
-    }
     .contentbox:nth-of-type(1),
     .contentbox:nth-of-type(2) {
         width: 50%;
@@ -85,9 +88,4 @@ p {
 
 /********** desktop view **********/
 
-@media (min-width: 992px) {
-    section {
-        float: left;
-        background-color: aqua;
-    }
-}
+@media (min-width: 992px) {}
