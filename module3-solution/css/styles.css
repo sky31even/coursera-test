@@ -1,0 +1,98 @@
+/* Global style */
+
+body {
+    font-family: "Balsamiq Sans";
+    color: black
+}
+
+
+/* navbar region style */
+
+.navbar-default {
+    background-color: #999999;
+    border-color: black;
+    border-width: 3px;
+    border-radius: 0%;
+}
+
+.navbar-header {
+    border-width: 10px;
+    border-color: black;
+}
+
+.navbar-default .navbar-brand {
+    color: black;
+    font-weight: 900;
+    font-size: 25px;
+    margin: 5px 10px;
+}
+
+.navbar-toggle {
+    padding: 9px 5px;
+}
+
+.navbar-default .navbar-toggle {
+    /* navbar button */
+    border-color: black;
+    border-width: 2px;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: black;
+    height: 4px;
+    width: 30px;
+}
+
+#top-nav .navbar-nav {
+    background-color: #ffffff;
+    margin: 0;
+}
+
+.navbar-default .navbar-nav>li>a {
+    /* the space between items of navbar menu */
+    color: black;
+    font-size: 18px;
+    padding: 5px;
+}
+
+.divider {
+    margin: 0;
+    border: 1px solid black;
+    width: 95%;
+    margin: auto;
+}
+
+.navbar-default .navbar-collapse {
+    border-width: 3px;
+}
+
+@media (max-width: 767px) {
+    .navbar-default .navbar-collapse {
+        border-color: black;
+        background-color: white;
+    }
+}
+
+
+/* content page region sytle */
+
+h2 {
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.content-page {
+    margin: 10px;
+}
+
+.content-page section {
+    background-color: #999999;
+}
+
+section>p {
+    font-size: 16px;
+}
