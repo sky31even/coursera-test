@@ -1,37 +1,73 @@
-## Welcome to GitHub Pages
+# Module 5 的一个小tips
+> 最后一个作业花了我一点时间来理解，记在这里，将来也许对其他人有用。
 
-You can use the [editor on GitHub](https://github.com/sky31even/coursera-test/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+这里是 `homHtmlUrl` 获取的 `html snippet`：
 
-### Markdown
+```html
+    <div class="jumbotron">
+      <img src="images/jumbotron_768.jpg" alt="Picture of restaurant" class="img-responsive visible-xs">
+    </div>
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+    <div id="home-tiles" class="row">
+      <div class="col-md-4 col-sm-6 col-xs-12">
+        <a href="#" onclick="$dc.loadMenuCategories();"><div id="menu-tile"><span>menu</span></div></a>
+      </div>
+      <div class="col-md-4 col-sm-6 col-xs-12">
+      <!-- 下面这行是重点区域 -->
+        <a href="#" onclick="$dc.loadMenuItems({{randomCategoryShortName}});">
+          <div id="specials-tile"><span>specials</span></div>
+        </a>
+      </div>
+    </div><!-- End of #home-tiles -->
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+这里是对应的 `js` 文件片段：
 
-### Jekyll Themes
+```js
+function buildAndShowHomeHTML (categories) {
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/sky31even/coursera-test/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+  // Load home snippet page
+  $ajaxUtils.sendGetRequest(
+    homeHtmlUrl,
+    function (homeHtml) {
+      var chosenCategoryShortName = chooseRandomCategory(categories).short_name;
+	      // 下面这行是重点区域
+      var homeHtmlToInsertIntoMainPage = insertProperty(homeHtml, "randomCategoryShortName", "'"+chosenCategoryShortName+"'");
+      insertHtml("#main-content", homeHtmlToInsertIntoMainPage);
+    },
+    false); 
+}
 
-### Support or Contact
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+dc.loadMenuItems = function (categoryShort) {
+  showLoading("#main-content");
+  $ajaxUtils.sendGetRequest(
+    menuItemsUrl + categoryShort,
+    buildAndShowMenuItemsHTML);
+};
+```
+
+最开始写到 `js` 的 40 行的位置时，我认为这个 `chosenCategoryShortName` 变量反正已经是字符串了，即使作业里面提示了要添加 surrounding 但我还是无视了，因为我看到下面的 `loadMenuItems` 方法就是直接用加号连接的，也就是两个字符串的相接，我认为应该不会有问题。
+
+但是在实际运行中，始终在提示我  `L is not defined` L 也可能是其他 category 的 short name，于是我回溯代码发现了问题所在：
+- 在创建 `homeHtmlToInsertIntoMainPage` 这个变量的时候，使用的 `insertProperty` 这个方法，返回的是一整个 html 的字符串，因此 `chosenCategoryShortName` 如果不带单引号，也会被转换成一个变量名，==这时候`loadMenuItems` 其实还尚未调用；==
+- 在加载完成后，因为 `onclick` 事件而调用  `loadMenuItems`方法时，整个页面的 html 其实是下面这样，注意 `loadMenuItems`这个方法的参数现在不会被识别为字符串，而是被当作一个变量输入，于是查询整个 stack 发现没有这个变量，从而报错。
+
+```html
+    <div class="jumbotron">
+      <img src="images/jumbotron_768.jpg" alt="Picture of restaurant" class="img-responsive visible-xs">
+    </div>
+
+    <div id="home-tiles" class="row">
+      <div class="col-md-4 col-sm-6 col-xs-12">
+        <a href="#" onclick="$dc.loadMenuCategories();"><div id="menu-tile"><span>menu</span></div></a>
+      </div>
+      <div class="col-md-4 col-sm-6 col-xs-12">
+      <!-- 下面这行是重点区域 -->
+        <a href="#" onclick="$dc.loadMenuItems(L);">
+          <div id="specials-tile"><span>specials</span></div>
+        </a>
+      </div>
+    </div><!-- End of #home-tiles -->
+```
